@@ -31,6 +31,7 @@ import {
 } from './lib/option-normalization';
 import { getConfigFromPkgJson, getName } from './lib/package-info';
 import { shouldCssModules, cssModulesConfig } from './lib/css-modules';
+import namedDirectory from './lib/named-directory';
 
 // Extensions to use when resolving modules
 const EXTENSIONS = [
@@ -454,6 +455,9 @@ function createConfig(options, entry, format, writeMeta) {
 
 			plugins: []
 				.concat(
+					namedDirectory({
+						exclude: 'node_modules/**',
+					}),
 					postcss({
 						plugins: [
 							autoprefixer(),
