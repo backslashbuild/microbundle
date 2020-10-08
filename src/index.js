@@ -18,6 +18,8 @@ import alias from '@rollup/plugin-alias';
 import postcss from 'rollup-plugin-postcss';
 import typescript from 'rollup-plugin-typescript2';
 import json from '@rollup/plugin-json';
+import svgr from '@svgr/rollup';
+import smartAsset from 'rollup-plugin-smart-asset';
 import logError from './log-error';
 import { isDir, isFile, stdout, isTruthy, removeScope } from './utils';
 import { getSizeInfo } from './lib/compressed-size';
@@ -31,7 +33,16 @@ import { getConfigFromPkgJson, getName } from './lib/package-info';
 import { shouldCssModules, cssModulesConfig } from './lib/css-modules';
 
 // Extensions to use when resolving modules
-const EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx', '.es6', '.es', '.mjs'];
+const EXTENSIONS = [
+	'.ts',
+	'.tsx',
+	'.js',
+	'.jsx',
+	'.es6',
+	'.es',
+	'.mjs',
+	'.svg',
+];
 
 const WATCH_OPTS = {
 	exclude: 'node_modules/**',
@@ -475,6 +486,15 @@ function createConfig(options, entry, format, writeMeta) {
 						include: /\/node_modules\//,
 					}),
 					json(),
+
+					smartAsset({
+						url: 'copy',
+						useHash: true,
+						keepName: true,
+						keepImport: true,
+					}),
+					svgr(),
+
 					{
 						// We have to remove shebang so it doesn't end up in the middle of the code somewhere
 						transform: code => ({
@@ -537,8 +557,8 @@ function createConfig(options, entry, format, writeMeta) {
 							modern,
 							compress: options.compress !== false,
 							targets: options.target === 'node' ? { node: '8' } : undefined,
-							pragma: options.jsx || 'h',
-							pragmaFrag: options.jsxFragment || 'Fragment',
+							pragma: options.jsx || 'React.createElement',
+							pragmaFrag: options.jsxFragment || 'React.Fragment',
 							typescript: !!useTypescript,
 							jsxImportSource: options.jsxImportSource || false,
 						},

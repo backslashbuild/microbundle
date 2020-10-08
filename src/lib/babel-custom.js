@@ -106,6 +106,13 @@ export default () => {
 									'transform-fast-rest',
 								],
 							},
+
+						{
+							name: '@babel/plugin-proposal-optional-chaining',
+						},
+						{
+							name: '@babel/plugin-proposal-nullish-coalescing-operator',
+						},
 						{
 							name: '@babel/plugin-proposal-class-properties',
 							loose: true,
